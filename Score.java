@@ -26,15 +26,9 @@ public class Score{
 	}
 
 	/**
- 	* resets the score when the user looses
- */
-	public void resetScore(){
-		currentScore = 0;
-	}
-	
-	/**
 	* Methods to return information for display purposes
 	*/
+
 	public String toStringScore(){
 		return currentScore+"";
 	}

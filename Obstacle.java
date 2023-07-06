@@ -24,28 +24,20 @@ public class Obstacle{
 	* Positconition, adds a randomly position circle object
 	*/
 	public ArrayList<Circle> generateObs(Apple apple){
-		int x = (int)(Math.random()*(width-50));
-		int y = (int)(Math.random()*(height-50));
-		obs.add(new Circle(x, y, (int)(width/40), Color.BLACK));
-		for(int i = 0; i<obs.size(); i++){
-			if (obs.get(obs.size()-1).getBoundsInParent().intersects(obs.get(i).getBoundsInParent())){
-				x = (int)(Math.random()*(width-50));
-				y = (int)(Math.random()*(height-50));
+		int x = (int)(Math.random()*width);
+		int y = (int)(Math.random()*height);
+		while (true){
+			if (Math.abs(x - apple.getCenterX()) < 10 && Math.abs(y - apple.getCenterX()) < 10){
+				break;
+			} else {
+				x = (int)(Math.random()*width);
+				y = (int)(Math.random()*height);
 			}
 		}
-		
+		obs.add(new Circle(x, y, 6, Color.BLACK));
 		return obs;
 	}
 
-	/**
-  * reset function for when the user looses
-	*/
-	public void reset(){
-		for (int i = obs.size()-1; i>0; i--){
-			obs.remove(i);
-		}	
-	}
-	
 	/**
 	* Returns circle obstacle objects
 	* Limits access to arraylist

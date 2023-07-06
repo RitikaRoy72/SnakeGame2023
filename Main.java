@@ -9,18 +9,12 @@ import javafx.scene.shape.*;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.input.*;
-import javafx.scene.paint.*;
 //Only used for screen sizing
 import java.awt.Dimension;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.scene.canvas.*;
-import javafx.event.*;
-import javafx.scene.layout.*;
-import javafx.geometry.Pos;
-
 
 public class Main extends Application 
 { 
@@ -38,21 +32,19 @@ public class Main extends Application
 	    primaryStage.setTitle("Snake Game");
 			Group root = new Group();
 	    Scene scene = new Scene(root, width, height);
-			
-			scene.setFill(new RadialGradient(0, 0, (int)height/2, (int)width/2, 1, true, CycleMethod.NO_CYCLE, new Stop(0, Color.web("#81c483")), new Stop(1, Color.web("#fcc200"))));
+			scene.setFill(Color.GRAY);
 
-			//Construct Game objects
+			//Constract Game objects
 			Score score = new Score();
 			Text current = new Text(10, 20, "Current: "+score.toStringScore());
 			current.setFill(Color.BLUE);
-
-			//Score
+			
 			Text best = new Text(10, 35, "Best: "+score.toStringBest());
 			best.setFill(Color.BLUE);
+
 			root.getChildren().add(current);
 			root.getChildren().add(best);
-
-			//Onscreen buttons
+			
 			Button up = new Button("U");
 			up.setLayoutX(width-57);
 			up.setLayoutY(height-70);
@@ -72,22 +64,14 @@ public class Main extends Application
 			right.setLayoutX(width-30);
 			right.setLayoutY(height-60);
 			root.getChildren().add(right);
-
-			//Recent for lost snake or apple
-			Button reCenter = new Button("Recenter");
-			reCenter.setLayoutX(0);
-			reCenter.setLayoutY(height-60);
-			root.getChildren().add(reCenter);
-
-			//Generate game elements
+			
 			Apple apple = new Apple(width, height);
 			root.getChildren().add(apple);
 
-			Snake snake = new Snake(width, height, apple);
-			for (int i = 0; i < score.getCurrentScore()+2; i++){
-				root.getChildren().add(snake.getSnake(i));
-			}
-		
+			Snake snake = new Snake(width, height);
+			root.getChildren().add(snake);
+
+
 			Obstacle obs = new Obstacle(width, height);
 			
 			primaryStage.setScene(scene);
@@ -98,57 +82,134 @@ public class Main extends Application
 			//Check for consumed apple or obstacle collison
 			//print score
 			//Buttons and a, w, s, z, keys are interchageable
-
-			reCenter.setOnAction(new EventHandler<ActionEvent>(){
-				public void handle(ActionEvent event){
-					snake.reCenter();
-					apple.newApple(obs, score);
-				}
-			});
-			
 			up.setOnAction (new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event){
 					snake.moveSnakeUp();
-					afterPress(apple, snake, obs, score, root, current, best, (int)width, (int)height);
-				} 
+					if (snake.isDead(obs, score)){
+						Text over = new Text(70, 70, "Game Over");
+						over.setFill(Color.WHITE);
+						root.getChildren().add(over);
+						System.out.println("Game Over");
+						try{ Thread.sleep(10000); }
+						catch (Exception e){ System.exit(0);}
+						System.exit(0);
+					}
+					if(snake.isCollide(apple)){
+						score.increment();
+						apple.newApple();
+						current.setText("Current: "+score.toStringScore());
+						best.setText("Best: "+score.toStringBest());
+						
+						obs.generateObs(apple);
+						root.getChildren().add(obs.getCircles(score.getCurrentScore()-1));
+						
+						
+					} 
 					
+				}
 			});
 
 			down.setOnAction (new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event){
 					snake.moveSnakeDown();
-					afterPress(apple, snake, obs, score, root, current, best, (int)width, (int)height);
-				} 
-		});
-				
+					if (snake.isDead(obs, score)){
+						Text over = new Text(70, 70, "Game Over");
+						over.setFill(Color.WHITE);
+						root.getChildren().add(over);
+						System.out.println("Game Over");
+						try{ Thread.sleep(10000); }
+						catch (Exception e){ System.exit(0);}
+						System.exit(0);
+					}
+					if(snake.isCollide(apple)){
+						score.increment();
+						apple.newApple();
+						current.setText("Current: "+score.toStringScore());
+						best.setText("Best: "+score.toStringBest());
+						
+						obs.generateObs(apple);
+						root.getChildren().add(obs.getCircles(score.getCurrentScore()-1));
+					}
+				}
+			});
+
 			left.setOnAction (new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event){
 					snake.moveSnakeLeft();
-					afterPress(apple, snake, obs, score, root, current, best, (int)width, (int)height);
+					if (snake.isDead(obs, score)){
+						Text over = new Text(70, 70, "Game Over");
+						over.setFill(Color.WHITE);
+						root.getChildren().add(over);
+						System.out.println("Game Over");
+						try{ Thread.sleep(10000); }
+						catch (Exception e){ System.exit(0);}
+						System.exit(0);
+					}
+					if(snake.isCollide(apple)){
+						score.increment();
+						apple.newApple();
+						current.setText("Current: "+score.toStringScore());
+						best.setText("Best: "+score.toStringBest());
+
+						obs.generateObs(apple);
+						root.getChildren().add(obs.getCircles(score.getCurrentScore()-1));
+					}
 				}
-		});
-		
+			});
 
 			right.setOnAction (new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event){
 					snake.moveSnakeRight();
-					afterPress(apple, snake, obs, score, root, current, best, (int)width, (int)height);
+					if (snake.isDead(obs, score)){
+						Text over = new Text(70, 70, "Game Over");
+						over.setFill(Color.WHITE);
+						root.getChildren().add(over);
+						System.out.println("Game Over");
+						try{ Thread.sleep(10000); }
+						catch (Exception e){ System.exit(0);}
+						System.exit(0);
+					}
+					if(snake.isCollide(apple)){
+						score.increment();
+						apple.newApple();
+						current.setText("Current: "+score.toStringScore());
+						best.setText("Best: "+score.toStringBest());
+
+						obs.generateObs(apple);
+						root.getChildren().add(obs.getCircles(score.getCurrentScore()-1));
+					}
+				
 				}
 			});
-				
 
 			scene.setOnKeyPressed((KeyEvent event) -> {
 				if (event.getCode().equals(KeyCode.S)){
-					scene.setFill(snake.moveSnakeRight());
+					snake.moveSnakeRight();
 				}else if (event.getCode().equals(KeyCode.A)){
-					scene.setFill(snake.moveSnakeLeft());
+					snake.moveSnakeLeft();
 				}else if (event.getCode().equals(KeyCode.W)){
-					scene.setFill(snake.moveSnakeUp());
+					snake.moveSnakeUp();
 				}else if (event.getCode().equals(KeyCode.Z)){
-					scene.setFill(snake.moveSnakeDown());
+					snake.moveSnakeDown();
 				}
-				afterPress(apple, snake, obs, score, root, current, best, (int)width, (int)height);
-					
+				if (snake.isDead(obs, score)){
+						Text over = new Text(70, 70, "Game Over");
+						over.setFill(Color.WHITE);
+						root.getChildren().add(over);
+						System.out.println("Game Over");
+						try{ Thread.sleep(10000); }
+						catch (Exception e){ System.exit(0);}
+						System.exit(0);
+					}
+					if(snake.isCollide(apple)){
+						score.increment();
+						apple.newApple();
+						current.setText("Current: "+score.toStringScore());
+						best.setText("Best: "+score.toStringBest());
+						
+						obs.generateObs(apple);
+						root.getChildren().add(obs.getCircles(score.getCurrentScore()-1));
+					}
 				});
 													
 			
@@ -157,67 +218,6 @@ public class Main extends Application
 		}
   }
 
-	public static void afterPress(Apple apple, Snake snake, Obstacle obs, Score score, Group root, Text current, Text best, int width, int height){
-		try{
-			//Check if the snake is dead 
-			if (snake.isDead(obs, score) || snake.selfCollide()) {
-	
-				//Align the positioning of game over controls
-				VBox vbox = new VBox();
-				
-				
-				//Display the game over message
-				Text over = new Text((int)(width/2), (int)(width/10), "Game Over");
-				over.setFill(Color.BLACK);
-				over.setStrokeWidth(4);
-				vbox.getChildren().add(over);
-				
-	
-				//Prompt the user to restart and reset game elements
-				Button restart = new Button("Restart");
-				vbox.getChildren().add(restart);
-	
-				for (int i = score.getCurrentScore()+1; i>=0; i--){
-					root.getChildren().remove(snake.getSnake(i));
-				}
-				snake.resetSnake();
-				
-				restart.setOnAction (new EventHandler<ActionEvent>() {
-					public void handle(ActionEvent event){
-						root.getChildren().add(snake.getSnake(0));
-						root.getChildren().add(snake.getSnake(1));
-						
-						apple.newApple(obs, score);
-						for (int i = score.getCurrentScore()-1; i>=0; i--){
-							root.getChildren().remove(obs.getCircles(i));
-						}
-						obs.reset();
-						
-						score.resetScore();
-						current.setText("Current: "+score.toStringScore());
-	
-						root.getChildren().remove(restart);
-						root.getChildren().remove(over);
-						root.getChildren().remove(vbox);
-					}
-				});
-				root.getChildren().add(vbox);
-				vbox.setAlignment(Pos.CENTER);
-			}
-			
-			if(snake.isCollide(apple)){
-				score.increment();
-				
-				current.setText("Current: "+score.toStringScore());
-				best.setText("Best: "+score.toStringBest());
-				obs.generateObs(apple);
-				apple.newApple(obs, score);
-				root.getChildren().add(obs.getCircles(score.getCurrentScore()-1));
-				root.getChildren().add(snake.getLastBlock());
-	
-			} 
-		} catch (Exception e){}
-	}
 	
   public static void main(String[] args) {
     launch(args);
