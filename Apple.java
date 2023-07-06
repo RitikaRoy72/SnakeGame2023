@@ -24,11 +24,11 @@ public class Apple extends Circle{
 	private double width;
 	private double  height;
 	public Apple(double width, double height) {
-		super((int)(Math.random()*150)+25, (int)(Math.random()*150)+25, (int)(width/70), Color.RED);
+		super((int)(Math.random()*150)+25, (int)(Math.random()*150)+25, 8, Color.RED);
 		this.width = width;
 		this.height = height;
-		this.setCenterX((int)(Math.random()*(width-30)));
-		this.setCenterY((int)(Math.random()*(height-30)));
+		this.setCenterX((int)(Math.random()*width));
+		this.setCenterY((int)(Math.random()*height));
 	}
 
 	public Circle getApple(){
@@ -36,15 +36,14 @@ public class Apple extends Circle{
 	}
 
 	
-	/**
+	/** 
 	* Called every time the previous apple was eaten
 	* constructs a new apple replaces old apple
 	* with the newly constructed apple
 	*/
-	public void newApple(Obstacle obs, Score score){
-		this.setCenterX((int)(Math.random()*(width)));
-		this.setCenterY((int)(Math.random()*(height)));
-		
+	public void newApple(){
+		this.setCenterX((int)(Math.random()*width));
+		this.setCenterY((int)(Math.random()*height));
 	}
 
 	
